@@ -1,0 +1,371 @@
+# API Contract: Task Management Service
+
+## Overview
+
+This document defines the API contracts for the Hackathone Phase 2 task management platform, including authentication and task CRUD operations with user isolation.
+
+## Base URL
+
+```
+https://api.hackathone-phase-2.com/v1
+```
+
+For local development:
+```
+http://localhost:8000/api/v1
+```
+
+## Authentication
+
+All authenticated endpoints require a JWT token in the Authorization header:
+
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+Tokens are issued during authentication and remain valid for 30 minutes with 7-day refresh capability.
+
+## API Endpoints
+
+### Authentication Endpoints
+
+#### POST /auth/register
+Register a new user account.
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "secure_password",
+  "name": "John Doe"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "created_at": "2026-02-05T10:00:00Z",
+  "updated_at": "2026-02-05T10:00:00Z"
+}
+```
+
+**Errors:**
+- 400: Invalid input (malformed email, weak password)
+- 409: Email already registered
+
+#### POST /auth/login
+Authenticate user and receive JWT token.
+
+**Request Body:**
+```json
+{
+  "email": "user@example.com",
+  "password": "secure_password"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIs...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIs...",
+  "token_type": "bearer",
+  "expires_in": 1800
+}
+```
+
+**Errors:**
+- 401: Invalid credentials
+
+#### GET /auth/me
+Get current authenticated user information.
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "email": "user@example.com",
+  "name": "John Doe",
+  "created_at": "2026-02-05T10:00:00Z",
+  "updated_at": "2026-02-05T10:00:00Z"
+}
+```
+
+**Errors:**
+- 401: Invalid or expired token
+
+#### POST /auth/logout
+Logout current user (invalidate token).
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Successfully logged out"
+}
+```
+
+### Task Management Endpoints
+
+#### GET /tasks
+Retrieve list of tasks owned by the authenticated user.
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+**Query Parameters:**
+- `status` (optional): Filter by status ('todo', 'in-progress', 'done')
+- `limit` (optional): Number of tasks to return (default: 20, max: 100)
+- `offset` (optional): Number of tasks to skip (for pagination)
+- `sort` (optional): Sort by 'created_at', 'updated_at', 'title' (default: created_at)
+- `order` (optional): 'asc' or 'desc' (default: desc)
+
+**Response (200 OK):**
+```json
+{
+  "tasks": [
+    {
+      "id": "b2c3d4e5-f678-90ab-cdef-1234567890ab",
+      "title": "Complete project plan",
+      "description": "Finish the technical specifications",
+      "status": "in-progress",
+      "user_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "created_at": "2026-02-05T10:00:00Z",
+      "updated_at": "2026-02-05T11:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "per_page": 20,
+    "total": 15,
+    "pages": 1
+  }
+}
+```
+
+**Errors:**
+- 401: Invalid or expired token
+
+#### POST /tasks
+Create a new task for the authenticated user.
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "title": "Design database schema",
+  "description": "Create ERD and define relationships",
+  "status": "todo"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": "c3d4e5f6-7890-abcd-ef12-34567890abcd",
+  "title": "Design database schema",
+  "description": "Create ERD and define relationships",
+  "status": "todo",
+  "user_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "created_at": "2026-02-05T12:00:00Z",
+  "updated_at": "2026-02-05T12:00:00Z"
+}
+```
+
+**Errors:**
+- 400: Invalid input (missing required fields, invalid status)
+- 401: Invalid or expired token
+
+#### GET /tasks/{id}
+Retrieve a specific task owned by the authenticated user.
+
+**Path Parameters:**
+- `id`: Task UUID
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "b2c3d4e5-f678-90ab-cdef-1234567890ab",
+  "title": "Complete project plan",
+  "description": "Finish the technical specifications",
+  "status": "in-progress",
+  "user_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "created_at": "2026-02-05T10:00:00Z",
+  "updated_at": "2026-02-05T11:30:00Z"
+}
+```
+
+**Errors:**
+- 401: Invalid or expired token
+- 403: Task does not belong to user
+- 404: Task not found
+
+#### PUT /tasks/{id}
+Update a specific task owned by the authenticated user.
+
+**Path Parameters:**
+- `id`: Task UUID
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "title": "Updated task title",
+  "description": "Updated description",
+  "status": "done"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "b2c3d4e5-f678-90ab-cdef-1234567890ab",
+  "title": "Updated task title",
+  "description": "Updated description",
+  "status": "done",
+  "user_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "created_at": "2026-02-05T10:00:00Z",
+  "updated_at": "2026-02-05T12:00:00Z"
+}
+```
+
+**Errors:**
+- 400: Invalid input (invalid status value)
+- 401: Invalid or expired token
+- 403: Task does not belong to user
+- 404: Task not found
+
+#### DELETE /tasks/{id}
+Delete a specific task owned by the authenticated user.
+
+**Path Parameters:**
+- `id`: Task UUID
+
+**Headers:**
+```
+Authorization: Bearer <jwt_token_here>
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Task deleted successfully"
+}
+```
+
+**Errors:**
+- 401: Invalid or expired token
+- 403: Task does not belong to user
+- 404: Task not found
+
+## Common Error Responses
+
+### 400 Bad Request
+```json
+{
+  "detail": "Validation error",
+  "errors": [
+    {
+      "loc": ["body", "title"],
+      "msg": "Field required",
+      "type": "missing"
+    }
+  ]
+}
+```
+
+### 401 Unauthorized
+```json
+{
+  "detail": "Not authenticated"
+}
+```
+
+### 403 Forbidden
+```json
+{
+  "detail": "Access denied - resource does not belong to user"
+}
+```
+
+### 404 Not Found
+```json
+{
+  "detail": "Resource not found"
+}
+```
+
+### 422 Validation Error
+```json
+{
+  "detail": [
+    {
+      "loc": ["query", "limit"],
+      "msg": "ensure this value is less than or equal to 100",
+      "type": "value_error.number.not_le"
+    }
+  ]
+}
+```
+
+### 500 Internal Server Error
+```json
+{
+  "detail": "An unexpected error occurred"
+}
+```
+
+## Security Headers
+
+All API responses include security headers:
+- `X-Content-Type-Options: nosniff`
+- `X-Frame-Options: DENY`
+- `X-XSS-Protection: 1; mode=block`
+- `Strict-Transport-Security: max-age=31536000; includeSubDomains`
+
+## Rate Limiting
+
+API requests are rate-limited to 1000 requests per hour per IP address. Exceeding this limit results in a 429 status code:
+
+```json
+{
+  "detail": "Rate limit exceeded",
+  "retry_after": 3600
+}
+```
+
+## Data Formats
+
+- **Dates**: ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)
+- **IDs**: UUID format (lowercase, hyphenated)
+- **Text**: UTF-8 encoded strings
+- **Numbers**: Standard numeric formats

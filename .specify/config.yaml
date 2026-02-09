@@ -1,0 +1,89 @@
+# Project Configuration for Hackathon Todo Application
+
+project:
+  name: "hackathon-todo"
+  version: "1.0.0"
+  description: "Modern web-based task management platform"
+  type: "fullstack-application"
+  architecture: "monorepo"
+  language: "typescript-python"
+
+features:
+  - name: "authentication"
+    description: "User registration, login, and JWT-based authentication"
+    priority: 1
+    enabled: true
+
+  - name: "task-management"
+    description: "CRUD operations for tasks with user isolation"
+    priority: 1
+    enabled: true
+
+  - name: "user-isolation"
+    description: "Ensuring users can only access their own data"
+    priority: 1
+    enabled: true
+
+technology_stack:
+  frontend:
+    framework: "nextjs"
+    language: "typescript"
+    styling: "tailwindcss"
+    state_management: "react_context_redux_zustand"
+
+  backend:
+    framework: "fastapi"
+    language: "python"
+    database: "postgresql"
+    orm: "sqlmodel"
+    authentication: "jwt_better_auth"
+
+  deployment:
+    containerization: "docker"
+    orchestration: "docker-compose"
+
+directories:
+  frontend_root: "./frontend"
+  backend_root: "./backend"
+  shared_root: "./shared"
+  specs_root: "./specs"
+  docs_root: "./docs"
+  tests_root: "./tests"
+
+files:
+  main_readme: "./README.md"
+  frontend_entry: "./frontend/pages/index.tsx"
+  backend_entry: "./backend/src/main.py"
+  docker_compose: "./docker-compose.yml"
+  environment_example: "./.env.example"
+
+development:
+  frontend_port: 3000
+  backend_port: 8000
+  database_port: 5432
+  debug: true
+  hot_reload: true
+
+testing:
+  frontend_framework: "jest"
+  backend_framework: "pytest"
+  coverage_threshold: 80
+  e2e_framework: "playwright"
+
+security:
+  authentication_required: true
+  user_isolation_required: true
+  input_validation: true
+  jwt_expiration_minutes: 30
+
+database:
+  engine: "postgresql"
+  migration_tool: "alembic"
+  connection_pool_size: 10
+  max_overflow: 20
+
+api:
+  version: "1.0"
+  base_path: "/api/v1"
+  rate_limiting: true
+  cors_enabled: true

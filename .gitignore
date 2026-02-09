@@ -1,0 +1,151 @@
+# Logs
+*.log
+*.log.*
+logs/
+*.out
+*.pid
+*.seed
+*.db
+
+# Runtime data
+pids
+*.pid
+*.swp
+*.swo
+*~
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Environment variables
+.env*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+.ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.covers/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Next.js
+.next/
+out/
+build/
+
+# Next.js build output
+.next/
+dist/
+out/
+
+# TypeScript
+*.tsbuildinfo
+*.bak
+
+# Database
+*.sqlite
+*.sqlite3
+
+# Local development settings
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Debug
+debug.log
+*.trace
+
+# NPM
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production
+/public/build
+
+# Environment specific
+.env.production
+.env.local
+.env.development
+.env.test
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Sentry
+.sentry-native
+
+# Coverage
+.coverage
+.coverage.*
+
+# Alembic
+alembic/versions/*.py
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Mac
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Icon?
