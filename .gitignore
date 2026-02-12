@@ -89,10 +89,7 @@ build/
 .next/
 dist/
 out/
-.pnpm-store/
-node_modules/
-dist/
-build/
+
 
 # TypeScript
 *.tsbuildinfo
@@ -153,3 +150,9 @@ alembic/versions/*.py
 Thumbs.db
 ehthumbs.db
 Icon?
+
+# pnpm cache - never commit this!
+.pnpm-store/
+node_modules/
+dist/
+build/
