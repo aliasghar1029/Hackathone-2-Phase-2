@@ -89,6 +89,10 @@ build/
 .next/
 dist/
 out/
+.pnpm-store/
+node_modules/
+dist/
+build/
 
 # TypeScript
 *.tsbuildinfo
